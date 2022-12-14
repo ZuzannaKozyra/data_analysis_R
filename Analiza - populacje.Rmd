@@ -1,0 +1,107 @@
+---
+title: "Analiza - populacje"
+author: "Zuzanna"
+date: '2022-10-09'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+dane <- read.csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv", header = T)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+1)
+```{r}
+dane %>% 
+  filter(continent=="Americas") %>% 
+  filter(year=="2007") %>% 
+  select(country, lifeExp)
+```
+
+2)
+```{r}
+dane <- dane %>% 
+  mutate(gdp=pop*gdpPercap)
+```
+
+3)
+```{r}
+dane %>% 
+  filter(gdpPercap==min(gdpPercap)) %>% 
+  select(country, year)
+```
+
+4)
+```{r}
+dane %>%
+  group_by(continent) %>% 
+  filter (lifeExp>mean(lifeExp)) %>% 
+  head
+```
+
+5)
+```{r}
+dane %>%
+  group_by(continent) %>% 
+  summarise (lifeExp=mean(lifeExp))
+```
+
+6)
+```{r}
+dane %>% 
+  summarise(grand_mean=mean(lifeExp), total_gdp=sum(gdpPercap))
+```
+
+7)
+```{r}
+dane %>% 
+  group_by(year) %>% 
+  summarise(grand.mean<-mean(lifeExp), total.gdp<-sum(gdpPercap))
+```
+
+8)
+```{r}
+wykres <- dane %>% 
+  filter(year=="2007")
+```
+```{r}
+wykres %>% 
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point()
+```
+
+9)
+```{r}
+wykres %>% 
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth(method = loess, se=F)
+```
+
+10)
+```{r}
+wykres %>% 
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth(se=F)
+```
+
+11)
+```{r}
+wykres2 <- dane %>%
+  group_by(year) %>% 
+  summarise (lifeExp=mean(lifeExp))
+```
+```{r}
+wykres2 %>% 
+  ggplot(aes(y=year, x=lifeExp)) +
+  geom_point() +
+  geom_line()
+```
+
